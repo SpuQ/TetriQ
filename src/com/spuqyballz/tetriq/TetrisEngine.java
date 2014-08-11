@@ -12,11 +12,14 @@ public class TetrisEngine {
 	private long score;
 	private long fLines;
 	
+	private Timer timer;
+	
 	private Tetrimino t;
 	private Tetrimino b;
 	private Playfield p;
 	
 	private TetrisGUI gui;
+	private boolean gameStatus;
 	
 	public TetrisEngine(){
 		this.score = 0;
@@ -26,35 +29,31 @@ public class TetrisEngine {
 		b = new Tetrimino();
 		p = new Playfield();
 		
+		gameStatus = true;
+		
 		gui = new TetrisGUI(b,t,p, this);
 		gui.setTitle("TetriQ");
 		gui.setVisible(true);
 		gui.addKeyListener(new KeyListener() {
 			@Override
 		    public void keyPressed(KeyEvent e) {
-				System.out.println("keycode: "+e.getKeyCode());
 		    	switch(e.getKeyCode()){
 		    	case 16: toggle();
-		    			 System.out.println("KEYPRESS - toggle");
 		    		break;
 		    	case 37:moveLeft();
-   			 			System.out.println("KEYPRESS - left");
 		    		break;
 		    	case 38:rotate();
-		    			System.out.println("KEYPRESS - rotate");
 		    		break;
 		    	case 39:moveRight();
-   			 			System.out.println("KEYPRESS - right");
 		    		break;
 		    	case 40:moveDown();
-   			 			System.out.println("KEYPRESS - down");
 		    		break;
 		    	case 32:dropDown();
-   			 			System.out.println("KEYPRESS - drop");
 		    		break;
 		    	case 68: uniteWithField(t);
 		    			 tetriminoInit();
-		 			System.out.println("KEYPRESS - dev - unite");
+		 			break;
+		    	case 84: clearTimer();
 		 			break;
 		    	}
 		    }
@@ -66,18 +65,33 @@ public class TetrisEngine {
 			public void keyTyped(KeyEvent arg0) {}
 		});
 		
+		setTimer(800);
+		
+		tetriminoInit();
+	}
+	
+	private void clearTimer(){
+		timer.cancel();
+		timer.purge();
+	}
+	
+	private void setTimer(int ms) {
 		// generate ticks
-		Timer timer = new Timer();
+		timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask() {
 			  @Override
 			  public void run() {
 			    tick();
 			  }
-			}, 700, 700);
-		
-		tetriminoInit();
+			}, ms, ms);
 	}
 	
+	private void increaseGameSpeed(){
+		this.clearTimer();
+		this.setTimer(800-(int)(this.fLines+1)*4);
+		System.out.println("gamespeed increased to "+(800-(int)(this.fLines+1)*4)+"ms");
+	}
+
 	/*
 	 * Tetrimino actions
 	 */
@@ -94,28 +108,24 @@ public class TetrisEngine {
 	public void rotate(){
 		if(canRotate()){
 			t.setMatrix(t.rotateLeft(t.getMatrix(), 4, 4));
-			System.out.println("Tetrimino rotated");
 		}
 		refresh();
 	}
 	public void moveLeft(){
 		if(canMoveLeft()){
 			t.setPosX(t.getPosX()-1);
-			System.out.println("Tetrimino repositioned to ["+t.getPosX()+"]["+t.getPosY()+"]");
 		}
 		refresh();
 	}
 	public void moveRight(){
 		if(canMoveRight()){
 			t.setPosX(t.getPosX()+1);
-			System.out.println("Tetrimino repositioned to ["+t.getPosX()+"]["+t.getPosY()+"]");
 		}
 		refresh();
 	}
 	public void moveDown(){
 		if(canMoveDown()){
 			t.setPosY(t.getPosY()+1);
-			System.out.println("Tetrimino repositioned to ["+t.getPosX()+"]["+t.getPosY()+"]");
 		}
 		refresh();
 	}
@@ -143,12 +153,20 @@ public class TetrisEngine {
 				break;
 			}
 			emptyColumsFromLeft++;
-			System.out.println("empty from left: "+emptyColumsFromLeft);
 		}
-		
 		if((t.getPosX()+emptyColumsFromLeft)<=0){
 			return false;
 		}
+
+		// check for other blocks in playfield
+		for(j=0;j<t.getySize();j++){
+			for(i=0;i<t.getxSize();i++){
+				if(!t.isEmpty(i, j) &&  !p.isEmpty(t.getPosX()+i-1,t.getPosY()+j) && p.isInBounds(t.getPosX()+i-1,t.getPosY()+j)){
+					return false;
+				}
+			}
+		}
+		
 		return true;
 	}
 	public boolean canMoveRight(){
@@ -161,10 +179,19 @@ public class TetrisEngine {
 			}
 			emptyColumsFromRight++;
 		}
-		
 		if((t.getPosX()+t.getxSize()-emptyColumsFromRight)>(p.getxSize()-1)){
 			return false;
 		}
+		
+		// check for other blocks in playfield
+		for(j=0;j<t.getySize();j++){
+			for(i=0;i<t.getxSize();i++){
+				if(!t.isEmpty(i, j) &&  !p.isEmpty(t.getPosX()+i+1,t.getPosY()+j) && p.isInBounds(t.getPosX()+i+1,t.getPosY()+j)){
+					return false;
+				}
+			}
+		}
+		
 		return true;
 	}
 	public boolean canMoveDown(){
@@ -181,14 +208,17 @@ public class TetrisEngine {
 		if((t.getPosY()+t.getySize()-emptyRowsFromBottom)>(p.getySize()-1)){
 			return false;
 		}
-		/*
-		// check for other blocks in field
-		for(i=0;i<t.getxSize();i++){
-			if(!t.isEmpty(i-emptyRowsFromBottom, (t.getySize()-1)) && !p.isEmpty(t.getPosX()+i-emptyRowsFromBottom, (t.getPosY()+t.getySize()) ) && p.isInBounds(t.getPosX()+i, (t.getPosY()+t.getySize()))){
-				return false;
+		
+		// check for other blocks in playfield
+		for(j=0;j<t.getySize();j++){
+			for(i=0;i<t.getxSize();i++){
+				if(!t.isEmpty(i, j) &&  !p.isEmpty(t.getPosX()+i,t.getPosY()+j+1) && p.isInBounds(t.getPosX()+i,t.getPosY()+j+1)){
+					return false;
+				}
 			}
 		}
-		*/
+		
+
 		return true;
 	}
 	
@@ -224,12 +254,23 @@ public class TetrisEngine {
 		if(!this.canMoveDown()){
 			this.uniteWithField(t);
 			
+			if(!p.rowIsEmpty(2)){
+				this.setGameStatus(false);
+	            try {
+					Thread.sleep(3000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				this.finalize();
+			}
+			
 			lines = p.removeLines();
 			this.score+=lines*lines;
 			this.fLines+=lines;
 			
 			tetriminoInit();
-		} else {
+		} else{
 			moveDown();
 		}
 	}
@@ -252,6 +293,20 @@ public class TetrisEngine {
 
 	public void setfLines(long fLines) {
 		this.fLines = fLines;
+	}
+
+	public boolean getGameStatus() {
+		return gameStatus;
+	}
+
+	public void setGameStatus(boolean gameStatus) {
+		this.gameStatus = gameStatus;
+	}
+
+	public void finalize(){
+		System.out.println("game over");
+		clearTimer();
+		gui.dispose();
 	}
 	
 }

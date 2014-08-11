@@ -114,48 +114,22 @@ public class Qmatrix extends JPanel {
 	
 	public int[][] rotateLeft(int m[][], int mxSize, int mySize){
 		int mOut[][] = new int[mySize][mxSize];
-		int i, j;
+		int i, j, tmp;
+		
+	    for (i = 0; i < mxSize; ++i) {
+	    	for (j = 0; j < mySize; ++j) {
+	    		mOut[i][j] = m[mxSize - j - 1][ i];
+	        }
+	    }
+	    /*
+	    for (i = 0; i < mxSize; ++i) {
+	    	for (j = 0; j < mySize; ++j) {
+	    		tmp = mOut[i][j];
+	    		mOut[i][j]=mOut[mxSize-i-i][j];
+	    		mOut[mxSize-1-i][j] = tmp;
+	        }
+	    }*/
 
-		// transpose matrix
-		for(j=0; j<mySize; j++) {
-			for (i=0; i<mxSize; i++) {
-				mOut[j][i] = m[i][j];
-			}
-		}
-		
-		// mirror matrix
-		
-		return mOut;
-	}
-	
-	public int[][] rotateRight(int m[][], int mxSize, int mySize){
-		int mOut[][] = new int[mySize][mxSize];
-		int i, j;
-	    int tmp;
-
-		// transpose matrix
-		for(j=0; j<mySize; j++) {
-			for (i=0; i<mxSize; i++) {
-				mOut[j][i] = m[i][j];
-			}
-		}
-		
-		// mirror matrix
-		for (j=0; j<mxSize; j++) {
-			for (i=0; i<mySize; i++) {
-					tmp = mOut[j][i];
-					mOut[j][i]=mOut[mySize-j][i];
-					mOut[mySize-j][i]=tmp;
-				}
-		}
-
-		// transpose matrix
-		for(j=0; j<mySize; j++) {
-			for (i=0; i<mxSize; i++) {
-				mOut[j][i] = m[i][j];
-			}
-		}
-		
 		return mOut;
 	}
 	

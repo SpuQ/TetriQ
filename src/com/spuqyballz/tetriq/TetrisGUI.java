@@ -43,6 +43,7 @@ public class TetrisGUI extends JFrame {
 		buffer.setBounds(unit*(playfield.getxSize()+2), unit,unit*buffer.getxSize(),unit*buffer.getySize());
 		container.add(buffer);
 		buffer.setBorder(BorderFactory.createLineBorder(Color.black));
+		buffer.setBackground(Color.DARK_GRAY);
 		
 		score = new JLabel("score");
 		score.setBounds(unit*(playfield.getxSize()+2), unit*(buffer.getySize()+2),unit*4,unit);
@@ -60,7 +61,7 @@ public class TetrisGUI extends JFrame {
 		playfield.setBounds(0,0,unit*playfield.getxSize(), unit*playfield.getySize());
 		playzone.add(playfield, JLayeredPane.DEFAULT_LAYER);
 		playzone.setLayout(null);
-		playfield.setOpaque(false);
+		playfield.setBackground(Color.DARK_GRAY);
 		dropper.setBounds((playfield.getxSize()/2-dropper.getxSize())*unit,(playfield.getySize()-dropper.getySize())*unit, unit*dropper.getxSize(), unit*dropper.getySize());
 		dropper.setOpaque(false);
 		playzone.add(dropper, JLayeredPane.DRAG_LAYER);

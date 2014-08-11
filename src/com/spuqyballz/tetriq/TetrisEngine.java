@@ -3,6 +3,8 @@ package com.spuqyballz.tetriq;
 import java.awt.EventQueue;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.JFrame;
 
@@ -66,6 +68,15 @@ public class TetrisEngine {
 			public void keyTyped(KeyEvent arg0) {}
 		});
 		
+		// generate ticks
+		Timer timer = new Timer();
+		timer.scheduleAtFixedRate(new TimerTask() {
+			  @Override
+			  public void run() {
+			    tick();
+			  }
+			}, 700, 700);
+		
 		tetriminoInit();
 	}
 	
@@ -112,7 +123,9 @@ public class TetrisEngine {
 	}
 	
 	public void dropDown(){
-
+		while(canMoveDown()){
+			moveDown();
+		}
 		refresh();
 	}
 	
@@ -173,7 +186,7 @@ public class TetrisEngine {
 		
 		// check for other blocks in field
 		for(i=0;i<t.getxSize();i++){
-			if(!t.isEmpty(i, (t.getySize()-1)) && !p.isEmpty(t.getPosX()+i, (t.getPosY()+t.getySize()) ) && p.isInBounds(t.getPosX()+i, (t.getPosY()+t.getySize()))){
+			if(!t.isEmpty(i-emptyRowsFromBottom, (t.getySize()-1)) && !p.isEmpty(t.getPosX()+i-emptyRowsFromBottom, (t.getPosY()+t.getySize()) ) && p.isInBounds(t.getPosX()+i, (t.getPosY()+t.getySize()))){
 				return false;
 			}
 		}
@@ -205,6 +218,16 @@ public class TetrisEngine {
 		t.setPosX(p.getxSize()/2 - t.getxSize()/2);
 		t.setPosY(0);
 		refresh();
+	}
+	
+	public void tick(){
+		//System.out.println("tick");
+		if(!this.canMoveDown()){
+			this.uniteWithField(t);
+			tetriminoInit();
+		} else {
+			moveDown();
+		}
 	}
 	
 	public void refresh(){

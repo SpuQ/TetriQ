@@ -207,6 +207,50 @@ public class Qmatrix extends JPanel {
 	}
 	
 	/*
+	 * matrix row and column operations
+	 */
+	public boolean rowIsEmpty(int row){
+		int i;
+		for(i=0;i<this.xSize;i++){
+			if(!this.isEmpty(i,row)){
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public boolean rowIsFull(int row){
+		int i;
+		for(i=0;i<this.xSize;i++){
+			if(this.isEmpty(i,row)){
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public boolean columnIsEmpty(int column){
+		int j;
+		for(j=0;j<this.xSize;j++){
+			if(!this.isEmpty(column,j)){
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public boolean columnIsFull(int column){
+		int j;
+		for(j=0;j<this.xSize;j++){
+			if(this.isEmpty(column,j)){
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	
+	/*
 	 * Visualization stuff
 	 */
 	

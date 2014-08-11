@@ -26,15 +26,13 @@ public class TetrisEngine {
 		b = new Tetrimino();
 		p = new Playfield();
 		
-		t.setPosX(p.getxSize()/2 - t.getxSize()/2);
-		t.setPosY(0);
-		
 		gui = new TetrisGUI(b,t,p);
 		gui.setTitle("TetriQ");
 		gui.setVisible(true);
 		gui.addKeyListener(new KeyListener() {
 			@Override
 		    public void keyPressed(KeyEvent e) {
+				System.out.println("keycode: "+e.getKeyCode());
 		    	switch(e.getKeyCode()){
 		    	case 16: toggle();
 		    			 System.out.println("KEYPRESS - toggle");
@@ -54,6 +52,10 @@ public class TetrisEngine {
 		    	case 32:dropDown();
    			 			System.out.println("KEYPRESS - drop");
 		    		break;
+		    	case 68: uniteWithField(t);
+		    			 tetriminoInit();
+		 			System.out.println("KEYPRESS - dev - unite");
+		 			break;
 		    	}
 		    }
 
@@ -63,6 +65,8 @@ public class TetrisEngine {
 			@Override
 			public void keyTyped(KeyEvent arg0) {}
 		});
+		
+		tetriminoInit();
 	}
 	
 	/*
@@ -120,12 +124,60 @@ public class TetrisEngine {
 		return true;
 	}
 	public boolean canMoveLeft(){
+		int emptyColumsFromLeft=0, j, i;
+		
+		// check for field boundaries on the right side
+		for(i=0;i<(t.getySize()-1);i++){
+			if(!t.columnIsEmpty(i)){
+				break;
+			}
+			emptyColumsFromLeft++;
+			System.out.println("empty from left: "+emptyColumsFromLeft);
+		}
+		
+		if((t.getPosX()+emptyColumsFromLeft)<=0){
+			return false;
+		}
 		return true;
 	}
 	public boolean canMoveRight(){
+		int emptyColumsFromRight=0, j, i;
+		
+		// check for field boundaries on the right side
+		for(i=(t.getySize()-1);i>0;i--){
+			if(!t.columnIsEmpty(i)){
+				break;
+			}
+			emptyColumsFromRight++;
+		}
+		
+		if((t.getPosX()+t.getxSize()-emptyColumsFromRight)>(p.getxSize()-1)){
+			return false;
+		}
 		return true;
 	}
 	public boolean canMoveDown(){
+		int emptyRowsFromBottom=0, j, i;
+		
+		// check for field boundaries
+		for(j=(t.getySize()-1);j>0;j--){
+			if(!t.rowIsEmpty(j)){
+				break;
+			}
+			emptyRowsFromBottom++;
+		}
+		
+		if((t.getPosY()+t.getySize()-emptyRowsFromBottom)>(p.getySize()-1)){
+			return false;
+		}
+		
+		// check for other blocks in field
+		for(i=0;i<t.getxSize();i++){
+			if(!t.isEmpty(i, (t.getySize()-1)) && !p.isEmpty(t.getPosX()+i, (t.getPosY()+t.getySize()) ) && p.isInBounds(t.getPosX()+i, (t.getPosY()+t.getySize()))){
+				return false;
+			}
+		}
+		
 		return true;
 	}
 	
@@ -146,6 +198,13 @@ public class TetrisEngine {
 	
 	public boolean canToggle(){
 		return true;
+	}
+	
+	public void tetriminoInit(){
+		t.setRandomTetrimino();
+		t.setPosX(p.getxSize()/2 - t.getxSize()/2);
+		t.setPosY(0);
+		refresh();
 	}
 	
 	public void refresh(){

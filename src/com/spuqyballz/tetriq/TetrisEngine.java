@@ -7,11 +7,14 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 public class TetrisEngine {
 	private long score;
 	private long fLines;
-	
+	private int speed;
+	private boolean toggle;
+
 	private Timer timer;
 	
 	private Tetrimino t;
@@ -84,11 +87,12 @@ public class TetrisEngine {
 			    tick();
 			  }
 			}, ms, ms);
+		this.setSpeed(ms);
 	}
 	
 	private void increaseGameSpeed(){
 		this.clearTimer();
-		this.setTimer(800-(int)(this.fLines+1)*4);
+		this.setTimer(700-(int)(this.fLines)*5);
 		System.out.println("gamespeed increased to "+(800-(int)(this.fLines+1)*4)+"ms");
 	}
 
@@ -142,6 +146,22 @@ public class TetrisEngine {
 	 */
 	
 	public boolean canRotate(){
+		int i,j;
+		Tetrimino r= new Tetrimino();
+		
+		r.setMatrix(t.getMatrix());
+		r.setMatrix(r.rotateLeft(r.getMatrix(), 4, 4));
+		
+		for(j=0;j<t.getySize();j++){
+			for(i=0;i<t.getxSize();i++){
+				if((!r.isEmpty(i, j) && !p.isEmpty(i+t.getPosX(), j+t.getPosY()))
+						|| ((!r.isEmpty(i, j) && !p.isInBounds(i+t.getPosX(), j+t.getPosY())))){
+					return false;
+				}
+			}
+		}
+		
+		
 		return true;
 	}
 	public boolean canMoveLeft(){
@@ -238,7 +258,11 @@ public class TetrisEngine {
 	 */
 	
 	public boolean canToggle(){
-		return true;
+		if(this.toggle){
+			this.setToggle(false);
+			return true;
+		}
+		return false;
 	}
 	
 	public void tetriminoInit(){
@@ -253,21 +277,17 @@ public class TetrisEngine {
 		//System.out.println("tick");
 		if(!this.canMoveDown()){
 			this.uniteWithField(t);
-			
+			this.setToggle(true);	// enable toggle
 			if(!p.rowIsEmpty(2)){
 				this.setGameStatus(false);
-	            try {
-					Thread.sleep(3000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 				this.finalize();
 			}
 			
-			lines = p.removeLines();
-			this.score+=lines*lines;
-			this.fLines+=lines;
+			if((lines = p.removeLines())>0){
+				this.score+=lines*lines;
+				this.fLines+=lines;
+				this.increaseGameSpeed();
+			}
 			
 			tetriminoInit();
 		} else{
@@ -294,6 +314,14 @@ public class TetrisEngine {
 	public void setfLines(long fLines) {
 		this.fLines = fLines;
 	}
+	
+	public int getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(int speed) {
+		this.speed = speed;
+	}
 
 	public boolean getGameStatus() {
 		return gameStatus;
@@ -304,9 +332,17 @@ public class TetrisEngine {
 	}
 
 	public void finalize(){
-		System.out.println("game over");
+		JOptionPane.showMessageDialog(new JFrame(), "Your score: "+this.getScore());
 		clearTimer();
 		gui.dispose();
+	}
+
+	public boolean isToggle() {
+		return toggle;
+	}
+
+	public void setToggle(boolean toggle) {
+		this.toggle = toggle;
 	}
 	
 }

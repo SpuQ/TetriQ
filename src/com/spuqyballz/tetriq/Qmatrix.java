@@ -121,14 +121,14 @@ public class Qmatrix extends JPanel {
 	    		mOut[i][j] = m[mxSize - j - 1][ i];
 	        }
 	    }
-	    /*
+	    
 	    for (i = 0; i < mxSize; ++i) {
 	    	for (j = 0; j < mySize; ++j) {
 	    		tmp = mOut[i][j];
-	    		mOut[i][j]=mOut[mxSize-i-i][j];
+	    		mOut[i][j]=mOut[mxSize-1-i][j];
 	    		mOut[mxSize-1-i][j] = tmp;
 	        }
-	    }*/
+	    }
 
 		return mOut;
 	}

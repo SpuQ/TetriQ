@@ -24,6 +24,7 @@ public class TetrisGUI extends JFrame {
 	private JLabel score;
 	private JLabel scorev;
 	private JLabel linesv;
+	private JLabel speedv;
 	
 	public TetrisGUI(Tetrimino buffer, Tetrimino dropper, Playfield playfield, TetrisEngine e) {
 		this.buffer = buffer;
@@ -35,7 +36,7 @@ public class TetrisGUI extends JFrame {
 		setResizable(false);
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(0, 0, (playfield.getxSize()+buffer.getxSize()+3)*unit, (playfield.getySize()+2)*unit);
+		setBounds(0, 0, (playfield.getxSize()+buffer.getxSize()+3)*unit, (playfield.getySize()+4)*unit);
 		container = new JPanel();
 		container.setVisible(true);
 		container.setLayout(null);
@@ -58,16 +59,21 @@ public class TetrisGUI extends JFrame {
 		scorev.setBounds(unit*(playfield.getxSize()+2), unit*(buffer.getySize()+3),unit*4,unit);
 		container.add(scorev);
 		
-
 		JLabel lines = new JLabel("lines");
 		lines.setBounds(unit*(playfield.getxSize()+2), unit*(buffer.getySize()+5),unit*4,unit);
 		container.add(lines);
 		
-
 		linesv = new JLabel("");
 		linesv.setBounds(unit*(playfield.getxSize()+2), unit*(buffer.getySize()+6),unit*4,unit);
 		container.add(linesv);
 
+		JLabel speed = new JLabel("clock");
+		speed.setBounds(unit*(playfield.getxSize()+2), unit*(buffer.getySize()+8),unit*4,unit);
+		container.add(speed);
+
+		speedv = new JLabel("");
+		speedv.setBounds(unit*(playfield.getxSize()+2), unit*(buffer.getySize()+9),unit*4,unit);
+		container.add(speedv);
 		/*
 		 * The playground
 		 */
@@ -91,6 +97,7 @@ public class TetrisGUI extends JFrame {
 	public void refresh(){
 		linesv.setText(""+e.getfLines());
 		scorev.setText(""+e.getScore());
+		speedv.setText(e.getSpeed()+"ms");
 		dropper.setLocation(dropper.getPosX()*unit, dropper.getPosY()*unit);
 		dropper.repaint();
 		playfield.repaint();

@@ -18,14 +18,19 @@ public class TetrisGUI extends JFrame {
 	private Tetrimino buffer;
 	private Tetrimino dropper;
 	private Playfield playfield;
+	private TetrisEngine e;
+	
 	private JLayeredPane playzone;
 	private JLabel score;
+	private JLabel scorev;
+	private JLabel linesv;
 	
-	public TetrisGUI(Tetrimino buffer, Tetrimino dropper, Playfield playfield) {
+	public TetrisGUI(Tetrimino buffer, Tetrimino dropper, Playfield playfield, TetrisEngine e) {
 		this.buffer = buffer;
 		this.dropper = dropper;
 		this.playfield = playfield;
 		this.unit = playfield.getuSize();
+		this.e =e;
 
 		setResizable(false);
 
@@ -49,6 +54,20 @@ public class TetrisGUI extends JFrame {
 		score.setBounds(unit*(playfield.getxSize()+2), unit*(buffer.getySize()+2),unit*4,unit);
 		container.add(score);
 		
+		scorev = new JLabel("");
+		scorev.setBounds(unit*(playfield.getxSize()+2), unit*(buffer.getySize()+3),unit*4,unit);
+		container.add(scorev);
+		
+
+		JLabel lines = new JLabel("lines");
+		lines.setBounds(unit*(playfield.getxSize()+2), unit*(buffer.getySize()+5),unit*4,unit);
+		container.add(lines);
+		
+
+		linesv = new JLabel("");
+		linesv.setBounds(unit*(playfield.getxSize()+2), unit*(buffer.getySize()+6),unit*4,unit);
+		container.add(linesv);
+
 		/*
 		 * The playground
 		 */
@@ -70,6 +89,8 @@ public class TetrisGUI extends JFrame {
 	}
 	
 	public void refresh(){
+		linesv.setText(""+e.getfLines());
+		scorev.setText(""+e.getScore());
 		dropper.setLocation(dropper.getPosX()*unit, dropper.getPosY()*unit);
 		dropper.repaint();
 		playfield.repaint();

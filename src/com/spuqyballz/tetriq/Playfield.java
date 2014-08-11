@@ -12,6 +12,7 @@ public class Playfield extends Qmatrix {
 		for(j=super.getySize()-1;j>=0;j--){
 			if(super.rowIsFull(j)){
 				shiftRowsOneUp(j);
+				j++;
 				linesRemoved++;
 			}
 		}

@@ -9,9 +9,8 @@ import java.util.TimerTask;
 import javax.swing.JFrame;
 
 public class TetrisEngine {
-	private double score;
-	private double cycles;
-	private double fLines;
+	private long score;
+	private long fLines;
 	
 	private Tetrimino t;
 	private Tetrimino b;
@@ -21,14 +20,13 @@ public class TetrisEngine {
 	
 	public TetrisEngine(){
 		this.score = 0;
-		this.cycles = 0;
 		this.fLines = 0;
 		
 		t = new Tetrimino();
 		b = new Tetrimino();
 		p = new Playfield();
 		
-		gui = new TetrisGUI(b,t,p);
+		gui = new TetrisGUI(b,t,p, this);
 		gui.setTitle("TetriQ");
 		gui.setVisible(true);
 		gui.addKeyListener(new KeyListener() {
@@ -221,11 +219,15 @@ public class TetrisEngine {
 	}
 	
 	public void tick(){
+		int lines;
 		//System.out.println("tick");
 		if(!this.canMoveDown()){
 			this.uniteWithField(t);
-			this.score+=p.removeLines();
-			System.out.println(score);
+			
+			lines = p.removeLines();
+			this.score+=lines*lines;
+			this.fLines+=lines;
+			
 			tetriminoInit();
 		} else {
 			moveDown();
@@ -234,6 +236,22 @@ public class TetrisEngine {
 	
 	public void refresh(){
 		gui.refresh();
+	}
+
+	public long getScore() {
+		return score;
+	}
+
+	public void setScore(long score) {
+		this.score = score;
+	}
+
+	public long getfLines() {
+		return fLines;
+	}
+
+	public void setfLines(long fLines) {
+		this.fLines = fLines;
 	}
 	
 }

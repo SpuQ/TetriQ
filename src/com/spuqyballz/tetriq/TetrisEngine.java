@@ -183,14 +183,14 @@ public class TetrisEngine {
 		if((t.getPosY()+t.getySize()-emptyRowsFromBottom)>(p.getySize()-1)){
 			return false;
 		}
-		
+		/*
 		// check for other blocks in field
 		for(i=0;i<t.getxSize();i++){
 			if(!t.isEmpty(i-emptyRowsFromBottom, (t.getySize()-1)) && !p.isEmpty(t.getPosX()+i-emptyRowsFromBottom, (t.getPosY()+t.getySize()) ) && p.isInBounds(t.getPosX()+i, (t.getPosY()+t.getySize()))){
 				return false;
 			}
 		}
-		
+		*/
 		return true;
 	}
 	
@@ -224,6 +224,8 @@ public class TetrisEngine {
 		//System.out.println("tick");
 		if(!this.canMoveDown()){
 			this.uniteWithField(t);
+			this.score+=p.removeLines();
+			System.out.println(score);
 			tetriminoInit();
 		} else {
 			moveDown();

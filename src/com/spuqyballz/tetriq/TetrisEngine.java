@@ -21,17 +21,21 @@ public class TetrisEngine {
 	private Tetrimino b;
 	private Playfield p;
 	
+	private boolean pause;
+	
 	private TetrisGUI gui;
 	private boolean gameStatus;
 	
 	public TetrisEngine(){
 		this.score = 0;
 		this.fLines = 0;
+		this.toggle = true;
 		
 		t = new Tetrimino();
 		b = new Tetrimino();
 		p = new Playfield();
 		
+		pause = false;
 		gameStatus = true;
 		
 		gui = new TetrisGUI(b,t,p, this);
@@ -40,6 +44,7 @@ public class TetrisEngine {
 		gui.addKeyListener(new KeyListener() {
 			@Override
 		    public void keyPressed(KeyEvent e) {
+				//System.out.println("key: "+e.getKeyCode());
 		    	switch(e.getKeyCode()){
 		    	case 16: toggle();
 		    		break;
@@ -53,10 +58,7 @@ public class TetrisEngine {
 		    		break;
 		    	case 32:dropDown();
 		    		break;
-		    	case 68: uniteWithField(t);
-		    			 tetriminoInit();
-		 			break;
-		    	case 84: clearTimer();
+		    	case 80: togglePause();
 		 			break;
 		    	}
 		    }
@@ -68,8 +70,8 @@ public class TetrisEngine {
 			public void keyTyped(KeyEvent arg0) {}
 		});
 		
-		setTimer(800);
-		
+		this.setSpeed(650);
+		setTimer(this.getSpeed());
 		tetriminoInit();
 	}
 	
@@ -92,8 +94,8 @@ public class TetrisEngine {
 	
 	private void increaseGameSpeed(){
 		this.clearTimer();
-		this.setTimer(700-(int)(this.fLines)*5);
-		System.out.println("gamespeed increased to "+(800-(int)(this.fLines+1)*4)+"ms");
+		this.setSpeed(this.getSpeed()-10);
+		this.setTimer(this.getSpeed());
 	}
 
 	/*
@@ -345,4 +347,16 @@ public class TetrisEngine {
 		this.toggle = toggle;
 	}
 	
+	public void togglePause(){
+		if(!this.pause){
+			System.out.println("Game paused");
+			pause = true;
+			clearTimer();
+		}
+		else{
+			System.out.println("Game unpaused");
+			pause = false;
+			setTimer(speed);
+		}
+	}
 }

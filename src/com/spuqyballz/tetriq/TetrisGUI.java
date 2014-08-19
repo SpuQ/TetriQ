@@ -67,13 +67,6 @@ public class TetrisGUI extends JFrame {
 		linesv.setBounds(unit*(playfield.getxSize()+2), unit*(buffer.getySize()+6),unit*4,unit);
 		container.add(linesv);
 
-		JLabel speed = new JLabel("clock");
-		speed.setBounds(unit*(playfield.getxSize()+2), unit*(buffer.getySize()+8),unit*4,unit);
-		container.add(speed);
-
-		speedv = new JLabel("");
-		speedv.setBounds(unit*(playfield.getxSize()+2), unit*(buffer.getySize()+9),unit*4,unit);
-		container.add(speedv);
 		/*
 		 * The playground
 		 */
@@ -97,7 +90,6 @@ public class TetrisGUI extends JFrame {
 	public void refresh(){
 		linesv.setText(""+e.getfLines());
 		scorev.setText(""+e.getScore());
-		speedv.setText(e.getSpeed()+"ms");
 		dropper.setLocation(dropper.getPosX()*unit, dropper.getPosY()*unit);
 		dropper.repaint();
 		playfield.repaint();

@@ -34,7 +34,7 @@ public class Tetrimino extends Qmatrix {
 	
 	/*
 	 * Stuff to shape the tetrimino
-	 * With added shape so we can define what are next shape will be
+	 * With added shape so we can define what our next shape will be
 	 */
 	public void setTetrimino(int shape){
 		super.setMatrix(this.setShape(shape));

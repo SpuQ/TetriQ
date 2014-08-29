@@ -42,7 +42,7 @@ public class TetrisEngine {
 		pause = false;
 		gameStatus = true;
 		
-		gui = new TetrisGUI(b,t,p, this);
+		gui = new TetrisGUI(b,t,next,p, this);
 		gui.setTitle("TetriQ");
 		gui.setVisible(true);
 		gui.addKeyListener(new KeyListener() {
@@ -278,8 +278,6 @@ public class TetrisEngine {
 		t.setPosY(0);
 		// Setup our next block
 		next.setRandomTetrimino();
-		System.out.println("Next block will be: " + next.getShape());
-		System.out.println("Current block is: " + t.getShape());
 		refresh();
 	}
 	

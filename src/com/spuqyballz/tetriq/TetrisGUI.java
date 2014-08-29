@@ -17,6 +17,7 @@ public class TetrisGUI extends JFrame {
 	private JPanel container;
 	private Tetrimino buffer;
 	private Tetrimino dropper;
+	private Tetrimino next;
 	private Playfield playfield;
 	private TetrisEngine e;
 	
@@ -26,9 +27,10 @@ public class TetrisGUI extends JFrame {
 	private JLabel linesv;
 	private JLabel speedv;
 	
-	public TetrisGUI(Tetrimino buffer, Tetrimino dropper, Playfield playfield, TetrisEngine e) {
+	public TetrisGUI(Tetrimino buffer, Tetrimino dropper, Tetrimino next,Playfield playfield, TetrisEngine e) {
 		this.buffer = buffer;
 		this.dropper = dropper;
+		this.next = next;
 		this.playfield = playfield;
 		this.unit = playfield.getuSize();
 		this.e =e;
@@ -46,10 +48,16 @@ public class TetrisGUI extends JFrame {
 		 * The control panel
 		 */
 		
-		buffer.setBounds(unit*(playfield.getxSize()+2), unit,unit*buffer.getxSize(),unit*buffer.getySize());
+		buffer.setBounds(unit*(playfield.getxSize()+2), unit*17,unit*buffer.getxSize(),unit*buffer.getySize());
 		container.add(buffer);
 		buffer.setBorder(BorderFactory.createLineBorder(Color.black));
 		buffer.setBackground(Color.DARK_GRAY);
+		
+		// Create next block window
+		next.setBounds(unit*(playfield.getxSize()+2), unit,unit*next.getxSize(),unit*next.getySize());
+		container.add(next);
+		next.setBorder(BorderFactory.createLineBorder(Color.black));
+		next.setBackground(Color.DARK_GRAY);
 		
 		score = new JLabel("score");
 		score.setBounds(unit*(playfield.getxSize()+2), unit*(buffer.getySize()+2),unit*4,unit);
@@ -94,6 +102,7 @@ public class TetrisGUI extends JFrame {
 		dropper.repaint();
 		playfield.repaint();
 		buffer.repaint();
+		next.repaint();
 	}
 
 }

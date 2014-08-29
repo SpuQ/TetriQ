@@ -32,9 +32,23 @@ public class Tetrimino extends Qmatrix {
 		super.colorizeMatrix(shape);
 	}
 	
+	/*
+	 * Stuff to shape the tetrimino
+	 * With added shape so we can define what are next shape will be
+	 */
+	public void setTetrimino(int shape){
+		super.setMatrix(this.setShape(shape));
+		super.colorizeMatrix(shape);
+	}
+	
 	public int[][] setShape(int shape){
 		this.shape = shape;
 		return this.shapes[this.shape];
+	}
+	
+	// Return int representation of shape
+	public int getShape(){
+		return this.shape;
 	}
 	
 

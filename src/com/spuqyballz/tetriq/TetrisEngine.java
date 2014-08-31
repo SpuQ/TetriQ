@@ -19,6 +19,8 @@ public class TetrisEngine {
 	
 	private Tetrimino t;
 	private Tetrimino b;
+	// Going to store the next block in here
+	private Tetrimino next;
 	private Playfield p;
 	
 	private boolean pause;
@@ -31,14 +33,16 @@ public class TetrisEngine {
 		this.fLines = 0;
 		this.toggle = true;
 		
+		// @todo pull initialization out of constructor and add to variable definitions
 		t = new Tetrimino();
 		b = new Tetrimino();
+		next = new Tetrimino();
 		p = new Playfield();
 		
 		pause = false;
 		gameStatus = true;
 		
-		gui = new TetrisGUI(b,t,p, this);
+		gui = new TetrisGUI(b,t,next,p, this);
 		gui.setTitle("TetriQ");
 		gui.setVisible(true);
 		gui.addKeyListener(new KeyListener() {
@@ -267,10 +271,13 @@ public class TetrisEngine {
 		return false;
 	}
 	
+	// Place a tetrimino at the top of the playing field
 	public void tetriminoInit(){
-		t.setRandomTetrimino();
+		t.setTetrimino(next.getShape());
 		t.setPosX(p.getxSize()/2 - t.getxSize()/2);
 		t.setPosY(0);
+		// Setup our next block
+		next.setRandomTetrimino();
 		refresh();
 	}
 	
@@ -291,6 +298,7 @@ public class TetrisEngine {
 				this.increaseGameSpeed();
 			}
 			
+			// Create new block
 			tetriminoInit();
 		} else{
 			moveDown();

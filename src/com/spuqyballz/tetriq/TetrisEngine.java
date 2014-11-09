@@ -342,9 +342,10 @@ public class TetrisEngine {
 	}
 
 	public void finalize(){
-		JOptionPane.showMessageDialog(new JFrame(), "Your score: "+this.getScore());
 		clearTimer();
-		gui.dispose();
+		gui.gameOver();
+		
+		//gui.dispose();
 	}
 
 	public boolean isToggle() {

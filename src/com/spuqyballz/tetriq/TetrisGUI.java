@@ -1,20 +1,17 @@
 package com.spuqyballz.tetriq;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.EventQueue;
-
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 
 public class TetrisGUI extends JFrame {
 	private int unit;
 	
-	private JPanel container;
+	private JLayeredPane container;
+	private JPanel gameOverPnl;
 	private Tetrimino buffer;
 	private Tetrimino dropper;
 	private Tetrimino next;
@@ -34,22 +31,23 @@ public class TetrisGUI extends JFrame {
 		this.playfield = playfield;
 		this.unit = playfield.getuSize();
 		this.e =e;
-
 		setResizable(false);
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(0, 0, (playfield.getxSize()+buffer.getxSize()+3)*unit, (playfield.getySize()+4)*unit);
-		container = new JPanel();
-		container.setVisible(true);
+		container = new JLayeredPane();
 		container.setLayout(null);
+		//container.setOpaque(false);
 		setContentPane(container);
+		container.setVisible(true);
+		
 		
 		/*
 		 * The control panel
 		 */
 		
 		buffer.setBounds(unit*(playfield.getxSize()+2), unit*17,unit*buffer.getxSize(),unit*buffer.getySize());
-		container.add(buffer);
+		container.add(buffer, JLayeredPane.DEFAULT_LAYER);
 		buffer.setBorder(BorderFactory.createLineBorder(Color.black));
 		buffer.setBackground(Color.DARK_GRAY);
 		
@@ -103,6 +101,24 @@ public class TetrisGUI extends JFrame {
 		playfield.repaint();
 		buffer.repaint();
 		next.repaint();
+	}
+	
+	public void gameOver(){
+		gameOverPnl = new JPanel();
+		gameOverPnl.setLayout(null);
+		gameOverPnl.setBounds(0, 0, (playfield.getxSize()+buffer.getxSize()+3)*unit, (playfield.getySize()+4)*unit);
+		
+		JLabel gameOverLbl = new JLabel("<html><h1><font color='lime'>Game Over</font></h1></html>");
+		gameOverLbl.setBounds(unit*(playfield.getxSize()/2-2), unit*(playfield.getySize()/2-7),unit*12,unit*10);
+		gameOverPnl.add(gameOverLbl);
+		
+		JLabel gameOverScore = new JLabel("<html><h2><font color='lime'>Score: "+this.scorev.getText()+"</font></h2></html>");
+		gameOverScore.setBounds(unit*(playfield.getxSize()/2), unit*(playfield.getySize()/2-5),unit*12,unit*10);
+		gameOverPnl.add(gameOverScore);
+		
+		container.add(gameOverPnl,0);
+		gameOverPnl.setBackground( new Color(0, 0, 0, 130) );
+		gameOverPnl.setVisible(true);
 	}
 
 }
